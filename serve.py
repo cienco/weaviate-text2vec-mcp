@@ -860,8 +860,8 @@ async def _list_tools() -> List[types.Tool]:
             }
             tool_title = "Ricerca ibrida (BM25 + vettoriale)"
             tool_description = (
-                "Esegue una ricerca ibrida combinando ricerca keyword (BM25) e ricerca vettoriale. "
-                "Tool principale per cercare nella collection WindChunk.\n\n"
+                "Esegue una ricerca semantica sui testi dei documenti WindBilance (collection WindChunk) e restituisce i campi text, fileName, pageIndex, chunkIndex, url. "
+                "Combina ricerca keyword (BM25) e ricerca vettoriale per risultati ottimali.\n\n"
                 "ISTRUZIONI: Usa SEMPRE collection='WindChunk'. Usa query_properties=['text','fileName'] e "
                 "return_properties=['text','sourceId','fileName','fileType','pageIndex','chunkIndex','url']. Mantieni alpha=0.8 e limit=10 "
                 "salvo richieste diverse."
