@@ -409,10 +409,22 @@ def _apply_mcp_metadata():
                 server_info["description"] = _MCP_DESCRIPTION
             if _MCP_INSTRUCTIONS:
                 server_info["instructions"] = _MCP_INSTRUCTIONS
+
+            # 🔍 LOG DI DEBUG
+            print("[mcp] server_info description present:", bool(_MCP_DESCRIPTION))
+            print("[mcp] server_info instructions present:", bool(_MCP_INSTRUCTIONS))
+            if _MCP_INSTRUCTIONS_FILE:
+                print("[mcp] instructions file:", _MCP_INSTRUCTIONS_FILE)
+            if _MCP_DESCRIPTION_FILE:
+                print("[mcp] description file:", _MCP_DESCRIPTION_FILE)
+
             if server_info:
                 mcp.set_server_info(**server_info)
-    except Exception:
-        pass
+                print("[mcp] server_info applied successfully")
+            else:
+                print("[mcp] WARNING: server_info is empty!")
+    except Exception as e:
+        print(f"[mcp] ERROR in _apply_mcp_metadata: {e}")
 
 
 _apply_mcp_metadata()
@@ -709,7 +721,7 @@ _HIDDEN_TOOLS: set[str] = {
     "diagnose_vertex",
     "list_collections",
     "get_schema",
-    "get_instructions",
+    # "get_instructions",  # RIMOSSO: deve essere visibile per debug
     "reload_instructions",
     "get_config",
     "check_connection",
