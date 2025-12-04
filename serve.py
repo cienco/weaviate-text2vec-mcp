@@ -844,43 +844,37 @@ async def _list_tools() -> List[types.Tool]:
                 "properties": {
                     "collection": {
                         "type": "string",
-                        "description": "Nome della collection (sempre 'WindChunk' per questo assistente)",
+                        "description": "Lascia vuoto oppure usa il valore predefinito per cercare nella documentazione WindBilance.",
                     },
                     "query": {
                         "type": "string",
-                        "description": "Query di ricerca testuale",
+                        "description": "Testo della domanda o delle parole chiave da cercare nei manuali WindBilance.",
                     },
                     "limit": {
                         "type": "integer",
-                        "description": "Numero massimo di risultati da restituire",
+                        "description": "Numero massimo di risultati da usare come base per la risposta.",
                         "default": 10,
                     },
                     "alpha": {
                         "type": "number",
-                        "description": "Peso della ricerca vettoriale (0.0 = solo keyword, 1.0 = solo vettoriale)",
+                        "description": "Parametro interno di ricerca (lascia il valore predefinito salvo casi particolari).",
                         "default": 0.8,
                     },
                     "query_properties": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "Proprietà su cui cercare (default: ['text', 'fileName'])",
-                    },
-                    "return_properties": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Proprietà da restituire (default: ['text', 'sourceId', 'fileName', 'fileType', 'pageIndex', 'chunkIndex', 'url'])",
+                        "description": "Campi testuali interni su cui cercare (di solito non serve modificarli).",
                     },
                 },
-                "required": ["collection", "query"],
+                "required": ["query"],
                 "additionalProperties": False,
             }
-            tool_title = "Ricerca ibrida (BM25 + vettoriale)"
+            tool_title = "Ricerca nella documentazione WindBilance"
             tool_description = (
-                "Esegue una ricerca semantica sui testi dei documenti WindBilance (collection WindChunk) e restituisce i campi text, fileName, pageIndex, chunkIndex, url. "
-                "Combina ricerca keyword (BM25) e ricerca vettoriale per risultati ottimali.\n\n"
-                "ISTRUZIONI: Usa SEMPRE collection='WindChunk'. Usa query_properties=['text','fileName'] e "
-                "return_properties=['text','sourceId','fileName','fileType','pageIndex','chunkIndex','url']. Mantieni alpha=0.8 e limit=10 "
-                "salvo richieste diverse."
+                "Usa questo tool per cercare nei manuali e nella documentazione tecnica WindBilance. "
+                "È il modo principale per trovare informazioni su uso, installazione, errori, manutenzione e calibrazione "
+                "delle bilance e dei terminali WindBilance. "
+                "Prima esegui una ricerca con questo tool, poi costruisci la risposta usando i manuali trovati."
             )
 
         tools.append(
