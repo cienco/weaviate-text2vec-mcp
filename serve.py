@@ -572,11 +572,11 @@ def hybrid_search(
     alpha: float = 0.2,
     query_properties: Optional[Any] = None,
 ) -> Dict[str, Any]:
-    if collection and collection != "WindBilance":
+    if collection and collection != "WindChunk":
         print(
-            f"[hybrid_search] warning: collection '{collection}' requested, but using 'WindBilance' as per instructions"
+            f"[hybrid_search] warning: collection '{collection}' requested, but using 'WindChunk' as per instructions"
         )
-        collection = "WindBilance"
+        collection = "WindChunk"
 
     if query_properties and isinstance(query_properties, str):
         try:
@@ -597,7 +597,7 @@ def hybrid_search(
             "query": query,
             "alpha": alpha,
             "limit": limit,
-            "return_properties": ["name", "source_pdf", "page_index", "mediaType"],
+            "return_properties": ["text", "sourceId", "fileName", "fileType", "pageIndex", "chunkIndex", "url"],
             "return_metadata": MetadataQuery(score=True, distance=True),
         }
         if query_properties:
@@ -607,13 +607,13 @@ def hybrid_search(
         # Log dei risultati nel formato Colab
         print("[DEBUG] Risultati hybrid search:")
         for o in getattr(resp, "objects", []) or []:
-            name = getattr(o, "properties", {}).get("name", "N/A")
+            fileName = getattr(o, "properties", {}).get("fileName", "N/A")
             md = getattr(o, "metadata", None)
             score = getattr(md, "score", None)
             if score is not None:
-                print(f"{name}  score={score:.4f}")
+                print(f"{fileName}  score={score:.4f}")
             else:
-                print(f"{name}  score=N/A")
+                print(f"{fileName}  score=N/A")
 
         out = []
         for o in getattr(resp, "objects", []) or []:
@@ -828,7 +828,7 @@ async def _list_tools() -> List[types.Tool]:
                 "properties": {
                     "collection": {
                         "type": "string",
-                        "description": "Nome della collection (sempre 'WindBilance' per questo assistente)",
+                        "description": "Nome della collection (sempre 'WindChunk' per questo assistente)",
                     },
                     "query": {
                         "type": "string",
@@ -847,12 +847,12 @@ async def _list_tools() -> List[types.Tool]:
                     "query_properties": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "Proprietà su cui cercare (default: ['caption', 'name'])",
+                        "description": "Proprietà su cui cercare (default: ['text', 'fileName'])",
                     },
                     "return_properties": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "Proprietà da restituire (default: ['name', 'source_pdf', 'page_index', 'mediaType'])",
+                        "description": "Proprietà da restituire (default: ['text', 'sourceId', 'fileName', 'fileType', 'pageIndex', 'chunkIndex', 'url'])",
                     },
                 },
                 "required": ["collection", "query"],
@@ -861,9 +861,9 @@ async def _list_tools() -> List[types.Tool]:
             tool_title = "Ricerca ibrida (BM25 + vettoriale)"
             tool_description = (
                 "Esegue una ricerca ibrida combinando ricerca keyword (BM25) e ricerca vettoriale. "
-                "Tool principale per cercare nella collection WindBilance.\n\n"
-                "ISTRUZIONI: Usa SEMPRE collection='WindBilance'. Usa query_properties=['caption','name'] e "
-                "return_properties=['name','source_pdf','page_index','mediaType']. Mantieni alpha=0.8 e limit=10 "
+                "Tool principale per cercare nella collection WindChunk.\n\n"
+                "ISTRUZIONI: Usa SEMPRE collection='WindChunk'. Usa query_properties=['text','fileName'] e "
+                "return_properties=['text','sourceId','fileName','fileType','pageIndex','chunkIndex','url']. Mantieni alpha=0.8 e limit=10 "
                 "salvo richieste diverse."
             )
 
@@ -916,8 +916,8 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
 
             clean_args: Dict[str, Any] = {}
 
-            # collection con default "WindBilance"
-            clean_args["collection"] = args.get("collection") or "WindBilance"
+            # collection con default "WindChunk"
+            clean_args["collection"] = args.get("collection") or "WindChunk"
 
             # query obbligatoria
             q = args.get("query")
