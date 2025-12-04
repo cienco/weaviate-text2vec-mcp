@@ -709,6 +709,10 @@ _HIDDEN_TOOLS: set[str] = {
     "diagnose_vertex",
     "list_collections",
     "get_schema",
+    "get_instructions",
+    "reload_instructions",
+    "get_config",
+    "check_connection",
 }
 
 
