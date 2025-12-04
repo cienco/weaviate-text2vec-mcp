@@ -52,7 +52,8 @@ def _patch_uvicorn_for_render():
                 print(f"[mcp] original positional args: host={args[1] if len(args) > 1 else None}, port={args[2] if len(args) > 2 else None}")
             
             print(f"[mcp] FORCING host={render_host}, port={render_port}")
-            return original_run(app, host=render_host, port=render_port, **kwargs)
+            # Passa app come posizionale e tutto il resto da kwargs (che contiene già host e port forzati)
+            return original_run(app, **kwargs)
         
         def patched_server_init(self, config=None, **kwargs):
             """Patch uvicorn.Server.__init__ per forzare host e port."""
