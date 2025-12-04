@@ -411,8 +411,8 @@ def _apply_mcp_metadata():
                 server_info["instructions"] = _MCP_INSTRUCTIONS
 
             # 🔍 LOG DI DEBUG
-            print("[mcp] server_info description present:", bool(_MCP_DESCRIPTION))
-            print("[mcp] server_info instructions present:", bool(_MCP_INSTRUCTIONS))
+            print("[mcp] server_info.description presente:", bool(_MCP_DESCRIPTION))
+            print("[mcp] server_info.instructions presente:", bool(_MCP_INSTRUCTIONS))
             if _MCP_INSTRUCTIONS_FILE:
                 print("[mcp] instructions file:", _MCP_INSTRUCTIONS_FILE)
             if _MCP_DESCRIPTION_FILE:
@@ -420,7 +420,6 @@ def _apply_mcp_metadata():
 
             if server_info:
                 mcp.set_server_info(**server_info)
-                print("[mcp] server_info applied successfully")
             else:
                 print("[mcp] WARNING: server_info is empty!")
     except Exception as e:
@@ -1008,6 +1007,35 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
                 )
             )
 
+        # 🔎 Caso speciale: get_instructions → mostra il prompt in chiaro
+        if name == "get_instructions" and isinstance(result, dict):
+            instructions = result.get("instructions") or "(nessuna instructions caricata)"
+            description = result.get("description") or "(nessuna description caricata)"
+
+            text_msg = (
+                "=== ISTRUZIONI (prompt) ===\n"
+                f"{instructions}\n\n"
+                "=== DESCRIZIONE ===\n"
+                f"{description}\n\n"
+                "File prompt: "
+                f"{result.get('prompt_file')}\n"
+                "File description: "
+                f"{result.get('description_file')}"
+            )
+
+            return types.ServerResult(
+                types.CallToolResult(
+                    content=[
+                        types.TextContent(
+                            type="text",
+                            text=text_msg,
+                        )
+                    ],
+                    structuredContent=result,
+                )
+            )
+
+        # Default per tutti gli altri tool
         text_msg = f"Risultato del tool {name} disponibile in structuredContent."
 
         return types.ServerResult(
